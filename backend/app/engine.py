@@ -1,7 +1,7 @@
 import os
-import google.generativeai as genai
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
+from langchain_ollama import ChatOllama
+from langchain_huggingface import HuggingFaceEmbeddings
 from backend.guardrails.prompt import SOCRATIC_SYSTEM_PROMPT
 from dotenv import load_dotenv
 
@@ -9,9 +9,8 @@ load_dotenv()
 
 class SocraticEngine:
     def __init__(self):
-        #Initialise Gemini
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        self.model=genai.GenerativeModel('gemini-1.5-flash')
+        #Initialise ChatOllama
+        self.model = ChatOllama(model="gemma3:1b")
         #Initialise ChromeDB
         self.embedding=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         self.vector_db=Chroma(
@@ -23,6 +22,6 @@ class SocraticEngine:
         docs=self.vector_db.similarity_search(user_input,k=3)
         context_text='\n\n'.join([doc.page_content for doc in docs])
         full_prompt=SOCRATIC_SYSTEM_PROMPT.format(context=context_text,query=user_input)
-        response=self.model.generate_content(full_prompt)
+        response=self.model.invoke(full_prompt)
 
-        return response.text
+        return response.content
