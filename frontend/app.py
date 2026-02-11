@@ -1,11 +1,9 @@
-import sys
 import os
 import streamlit as st
 import time
+import requests
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from backend.app.engine import SocraticEngine
+BACKEND_URL = os.environ.get("BACKEND_URL", "https://thinkrai.onrender.com")
 
 st.set_page_config(
     page_title="ThinkrAI | DSA Socratic Tutor",
@@ -107,14 +105,6 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if "engine" not in st.session_state:
-    try:
-        with st.spinner("Initializing Socratic Brain..."):
-            st.session_state.engine = SocraticEngine()
-            st.toast("Brain initialized successfully!", icon="🧠")
-    except Exception as e:
-        st.error(f"Failed to initialize engine: {e}")
-
 with st.sidebar:
     st.title("🧠 ThinkrAI")
     st.markdown("---")
@@ -133,7 +123,7 @@ with st.sidebar:
     """)
     st.markdown("---")
     st.markdown("### Settings")
-    st.caption("Model: `gemma3:1b` (Ollama)")
+    st.caption(f"Backend: `{BACKEND_URL}`")
     
     if st.button("Clear Chat History", type="secondary"):
         st.session_state.messages = []
@@ -159,7 +149,13 @@ if prompt := st.chat_input("Ask a question about your topic..."):
             response_placeholder = st.empty()
             full_response = ""
             
-            response_text = st.session_state.engine.query(prompt)
+            response = requests.post(
+                f"{BACKEND_URL}/query",
+                json={"question": prompt},
+                timeout=30
+            )
+            response.raise_for_status()
+            response_text = response.json()["answer"]
             
             for chunk in response_text.split():
                 full_response += chunk + " "

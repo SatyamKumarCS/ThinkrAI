@@ -13,3 +13,6 @@ pypdf
 huggingface-hub
 sentence-transformers
 pysqlite3-binary
+fastapi
+uvicorn
+requests
