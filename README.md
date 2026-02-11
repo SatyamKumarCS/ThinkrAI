@@ -72,7 +72,7 @@ Built with a local-first architecture, ThinkrAI leverages **Ollama (Gemma 3: 1B)
     ```
 
 ## 📸 Screenshots
-(screenshot/ui.png)
+![ThinkrAI UI](screenshot/ui.png)
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
