@@ -72,10 +72,7 @@ Built with a local-first architecture, ThinkrAI leverages **Ollama (Gemma 3: 1B)
     ```
 
 ## 📸 Screenshots
-| Chat Interface | Socratic Dialogue |
-|:---:|:---:|
-| *(Add Screenshot)* | *(Add Screenshot)* |
-
+!(screenshot/Screenshot 2026-02-11 at 4.38.23 PM.png)
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
