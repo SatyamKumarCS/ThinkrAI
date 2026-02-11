@@ -2,9 +2,6 @@
 
 > **Master Data Structures & Algorithms through guided inquiry, not memorization.**
 
-![ThinkrAI Banner](https://via.placeholder.com/1200x400?text=ThinkrAI+%7C+Socratic+Tutor+System)  
-*(Add a screenshot of your beautiful dark-mode UI here)*
-
 ## 🚀 Overview
 **ThinkrAI** is an advanced AI-powered tutoring system designed to teach **Data Structures and Algorithms (DSA)** using the **Socratic Method**. Instead of providing direct answers or code snippets, ThinkrAI acts as a personalized mentor, asking probing questions to guide students toward the solution. This approach fosters deep understanding and critical thinking skills essential for technical interviews and software engineering.
 
