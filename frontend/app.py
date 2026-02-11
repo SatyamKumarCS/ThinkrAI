@@ -144,26 +144,59 @@ if prompt := st.chat_input("Ask a question about your topic..."):
     
     st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
 
-    with st.spinner("Thinking..."):
-        try:
-            response_placeholder = st.empty()
-            full_response = ""
-            
-            response = requests.post(
-                f"{BACKEND_URL}/query",
-                json={"question": prompt},
-                timeout=30
-            )
-            response.raise_for_status()
-            response_text = response.json()["answer"]
-            
-            for chunk in response_text.split():
-                full_response += chunk + " "
-                time.sleep(0.02)
-                response_placeholder.markdown(f'<div class="bot-message">{full_response}▌</div>', unsafe_allow_html=True)
-            
-            response_placeholder.markdown(f'<div class="bot-message">{full_response}</div>', unsafe_allow_html=True)
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
-            
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+    status_placeholder = st.empty()
+    status_placeholder.info("⏳ Thinking...")
+    
+    try:
+        response_placeholder = st.empty()
+        full_response = ""
+        
+        # Retry logic for Render cold starts
+        max_retries = 3
+        response = None
+        for attempt in range(max_retries):
+            try:
+                if attempt > 0:
+                    status_placeholder.warning(
+                        f"🔄 Server is waking up... Retry {attempt}/{max_retries - 1} "
+                        f"(Render free tier spins down after inactivity)"
+                    )
+                response = requests.post(
+                    f"{BACKEND_URL}/query",
+                    json={"question": prompt},
+                    timeout=120
+                )
+                response.raise_for_status()
+                break
+            except requests.exceptions.Timeout:
+                if attempt == max_retries - 1:
+                    raise
+                time.sleep(2)
+        
+        status_placeholder.empty()
+        response_text = response.json()["answer"]
+        
+        for chunk in response_text.split():
+            full_response += chunk + " "
+            time.sleep(0.02)
+            response_placeholder.markdown(f'<div class="bot-message">{full_response}▌</div>', unsafe_allow_html=True)
+        
+        response_placeholder.markdown(f'<div class="bot-message">{full_response}</div>', unsafe_allow_html=True)
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+        
+    except requests.exceptions.Timeout:
+        status_placeholder.empty()
+        st.error(
+            "⏱️ The server is taking too long to respond. "
+            "This usually happens when the Render server is cold-starting. "
+            "Please wait a minute and try again."
+        )
+    except requests.exceptions.ConnectionError:
+        status_placeholder.empty()
+        st.error(
+            "🔌 Could not connect to the backend. "
+            "Please check that the backend is deployed and running."
+        )
+    except Exception as e:
+        status_placeholder.empty()
+        st.error(f"An error occurred: {e}")
