@@ -40,6 +40,7 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border: 1px solid #3d4451;
         max-width: 80%;
+        width: fit-content;
         margin-left: auto;
     }
 
@@ -54,6 +55,7 @@ st.markdown("""
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         border: 1px solid rgba(255, 255, 255, 0.05);
         max-width: 85%;
+        width: fit-content;
     }
 
     /* Input Field */
