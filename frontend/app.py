@@ -145,13 +145,12 @@ if prompt := st.chat_input("Ask a question about your topic..."):
     st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
 
     status_placeholder = st.empty()
-    status_placeholder.info("⏳ Thinking...")
+    status_placeholder.info("Thinking...")
     
     try:
         response_placeholder = st.empty()
         full_response = ""
         
-        # Retry logic for Render cold starts
         max_retries = 3
         response = None
         for attempt in range(max_retries):
